@@ -609,6 +609,42 @@
       line-height: 1.5;
     }
 
+    .confirm-popover {
+      margin-top: 13px;
+      padding: 15px;
+      border: 1px solid #b9d6fb;
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, #ffffff, #f7fbff);
+      box-shadow: 0 14px 34px rgba(36, 119, 242, .16);
+    }
+
+    .confirm-popover::before {
+      content: "反问确认";
+      display: inline-flex;
+      margin-bottom: 9px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #15549d;
+      background: #eaf3ff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .confirm-title {
+      margin: 0;
+      color: #193b66;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .confirm-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
     .result-card {
       margin-top: 10px;
       overflow: hidden;
@@ -1015,7 +1051,7 @@
                 </div>
               </div>
               <div class="progress"><i></i></div>
-              <div class="note">评审口径：用户不需要先选择“需求判断”功能。直接上传或提问后，由后台中枢判断机制决定是否进入智慧读文分支。</div>
+              <div class="note">用户不需要先选择“需求判断”功能。直接上传或提问后，由后台中枢判断机制决定是否进入智慧读文分支。</div>
             </div>
           </div>
         </section>
@@ -1037,16 +1073,20 @@
           <div class="message-row">
             <div class="avatar">AI</div>
             <div class="bubble">
-              检测到您上传了文件，但当前处理目标不够明确。请确认需要进行哪类处理：
-              <div class="choice-grid">
-                <button class="choice-card" type="button" data-jump="summary">
-                  <strong>全文总结</strong>
-                  <span>提炼文档主旨、核心观点、关键结论和风险建议。</span>
-                </button>
-                <button class="choice-card" type="button" data-jump="qa">
-                  <strong>文档问答</strong>
-                  <span>围绕文档内容提问，并返回可追溯的依据来源。</span>
-                </button>
+              检测到您仅上传了文件，系统已完成文件接收，但当前处理目标不够明确。
+              <div class="confirm-popover">
+                <p class="confirm-title">请确认需要进行哪类处理？</p>
+                <p class="confirm-subtitle">选择后，系统将进入对应的智慧读文流程。</p>
+                <div class="choice-grid">
+                  <button class="choice-card" type="button" data-jump="summary">
+                    <strong>全文总结</strong>
+                    <span>提炼文档主旨、核心观点、关键结论和风险建议。</span>
+                  </button>
+                  <button class="choice-card" type="button" data-jump="qa">
+                    <strong>文档问答</strong>
+                    <span>围绕文档内容提问，并返回可追溯的依据来源。</span>
+                  </button>
+                </div>
               </div>
               <div class="suggestions">
                 <button type="button" data-jump="summary">帮我总结这篇文章</button>
@@ -1241,10 +1281,13 @@
     const tabs = [...document.querySelectorAll('.tab')];
     const screens = [...document.querySelectorAll('.screen')];
 
-    function showScreen(name) {
+    function showScreen(name, updateHash = true) {
       tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.screen === name));
       screens.forEach((screen) => screen.classList.toggle('active', screen.id === `screen-${name}`));
       panel.classList.add('open');
+      if (updateHash && window.location.hash !== `#${name}`) {
+        history.replaceState(null, '', `#${name}`);
+      }
     }
 
     const dragState = {
@@ -1336,6 +1379,11 @@
     document.querySelectorAll('[data-jump]').forEach((button) => {
       button.addEventListener('click', () => showScreen(button.dataset.jump));
     });
+
+    const initialScreen = window.location.hash.replace('#', '');
+    if (screens.some((screen) => screen.id === `screen-${initialScreen}`)) {
+      showScreen(initialScreen, false);
+    }
   </script>
 </body>
 </html>
