@@ -621,7 +621,7 @@
 
     .composer {
       min-width: 0;
-      padding: 8px 16px 12px;
+      padding: 8px 16px 14px;
       background: #fff;
       box-shadow: 0 -8px 20px rgba(36, 75, 126, .08);
     }
@@ -678,17 +678,52 @@
       font-size: 15px;
     }
 
-    .round-btn {
+    .icon-btn {
       display: grid;
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       place-items: center;
-      border: 2px solid #111;
+      flex: 0 0 auto;
+      border: 1px solid #d8dde6;
       border-radius: 50%;
       background: #fff;
-      font-size: 24px;
-      font-weight: 700;
       cursor: pointer;
+      position: relative;
+    }
+
+    .icon-btn.voice {
+      gap: 2px;
+      grid-template-columns: repeat(4, 3px);
+    }
+
+    .icon-btn.voice span {
+      width: 3px;
+      border-radius: 999px;
+      background: #151923;
+    }
+
+    .icon-btn.voice span:nth-child(1),
+    .icon-btn.voice span:nth-child(4) {
+      height: 10px;
+    }
+
+    .icon-btn.voice span:nth-child(2),
+    .icon-btn.voice span:nth-child(3) {
+      height: 17px;
+    }
+
+    .icon-btn.add::before,
+    .icon-btn.add::after {
+      content: "";
+      position: absolute;
+      width: 15px;
+      height: 2px;
+      border-radius: 999px;
+      background: #151923;
+    }
+
+    .icon-btn.add::after {
+      transform: rotate(90deg);
     }
 
     .state-tabs {
@@ -732,15 +767,6 @@
       background: var(--blue-deep);
     }
 
-    .bottom-safe {
-      height: 20px;
-      display: grid;
-      place-items: center;
-      color: #777;
-      font-size: 20px;
-      background: #fff;
-    }
-
     @media (max-width: 860px) {
       body {
         place-items: start center;
@@ -778,12 +804,12 @@
   <main class="review-shell">
     <section class="review-note">
       <h1>粤政易移动端智慧读文原型</h1>
-      <p>这一版重点服务评审走查：把“上传文件、意图反问、全文总结、文档问答、固定追问”放进同一条移动端对话链路，同时保持接近粤政易的工作台观感。</p>
+      <p>这一版重点服务评审走查：把“上传文件、自动判断处理需求、反问确认、全文总结、文档问答、固定追问”放进同一条移动端对话链路，同时保持接近粤政易的工作台观感。</p>
       <div class="note-grid">
         <span>评审流程条</span>
         <span>粤政易对话流</span>
         <span>底部能力面板</span>
-        <span>意图反问确认</span>
+        <span>处理目标反问</span>
         <span>引用溯源标签</span>
         <span>固定模板追问</span>
       </div>
@@ -855,9 +881,9 @@
               <div class="msg">
                 <div class="avatar">AI</div>
                 <div class="bubble">
-                  已收到文件，正在进行智慧读文意图识别与文档解析。
+                  已收到文件，正在判断您的文档处理需求，并解析文件内容。
                   <div class="flow-chips">
-                    <span>意图识别</span>
+                    <span>需求判断</span>
                     <span>PDF解析</span>
                     <span>OCR兜底</span>
                   </div>
@@ -885,8 +911,8 @@
                 <div class="bubble">
                   检测到您上传了文件，请确认需要进行哪类操作？
                   <div class="flow-chips">
-                    <span>低置信度</span>
-                    <span>用户补全意图</span>
+                    <span>处理目标不明确</span>
+                    <span>用户确认目标</span>
                   </div>
                   <div class="choice-row">
                     <button type="button" data-screen="summary">全文总结</button>
@@ -960,7 +986,7 @@
                     <button type="button">生成风险提示</button>
                     <button type="button">形成汇报口径</button>
                   </div>
-                  <div class="tip">猜你想问按钮为固定模板：上一轮答案摘要 + 当前按钮意图 + 引用片段。</div>
+                  <div class="tip">猜你想问按钮为固定模板：上一轮答案摘要 + 当前按钮目标 + 引用片段。</div>
                 </div>
               </div>
             </div>
@@ -977,10 +1003,11 @@
           </div>
           <div class="input-box">
             <input placeholder="发消息或按住说话..." aria-label="输入框">
-            <button class="round-btn" type="button">◔</button>
-            <button class="round-btn" type="button" id="plusBtn">+</button>
+            <button class="icon-btn voice" type="button" aria-label="语音输入">
+              <span></span><span></span><span></span><span></span>
+            </button>
+            <button class="icon-btn add" type="button" id="plusBtn" aria-label="上传文件"></button>
           </div>
-          <div class="bottom-safe">—　□　‹</div>
         </footer>
       </div>
 
@@ -1007,7 +1034,7 @@
             </button>
             <button class="sheet-card" type="button" data-screen="clarify">
               <strong>反问确认</strong>
-              <span>意图不明确时确认总结或问答。</span>
+              <span>处理目标不明确时确认总结或问答。</span>
             </button>
           </div>
         </section>
