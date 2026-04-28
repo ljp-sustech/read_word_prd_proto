@@ -34,6 +34,7 @@
       background:
         radial-gradient(circle at 22% 12%, rgba(106, 172, 255, .28), transparent 28%),
         linear-gradient(135deg, #eef5ff, #dcecff);
+      overflow: hidden;
     }
 
     button,
@@ -90,7 +91,7 @@
 
     .phone {
       width: 390px;
-      height: 844px;
+      height: min(844px, calc(100vh - 56px));
       position: relative;
       overflow: hidden;
       border: 10px solid #111827;
@@ -171,22 +172,44 @@
     .tabs {
       margin: 16px 16px 0;
       height: 52px;
-      display: grid;
-      grid-template-columns: 46px repeat(4, 1fr) 44px;
+      display: flex;
       align-items: center;
       border-radius: 10px;
       background: rgba(255, 255, 255, .94);
       box-shadow: 0 8px 22px rgba(42, 96, 154, .1);
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-snap-type: x proximity;
+      mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+      cursor: grab;
+    }
+
+    .tabs::-webkit-scrollbar,
+    .choice-row::-webkit-scrollbar,
+    .suggest-row::-webkit-scrollbar,
+    .ability-strip::-webkit-scrollbar,
+    .state-tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .tabs span {
-      display: grid;
+      display: inline-grid;
       height: 100%;
+      min-width: 76px;
+      flex: 0 0 auto;
       place-items: center;
       color: #858c98;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
+      white-space: nowrap;
+      scroll-snap-align: start;
+    }
+
+    .tabs span:first-child,
+    .tabs span:last-child {
+      min-width: 48px;
     }
 
     .tabs span.active {
@@ -409,6 +432,8 @@
       gap: 8px;
       margin-top: 10px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       padding-bottom: 2px;
     }
 
@@ -558,7 +583,11 @@
       display: flex;
       gap: 8px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       padding-bottom: 8px;
+      mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+      cursor: grab;
     }
 
     .ability-strip button {
@@ -620,8 +649,20 @@
       display: flex;
       gap: 6px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       z-index: 4;
       pointer-events: auto;
+      mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+      cursor: grab;
+    }
+
+    .tabs.dragging,
+    .ability-strip.dragging,
+    .state-tabs.dragging,
+    .choice-row.dragging,
+    .suggest-row.dragging {
+      cursor: grabbing;
     }
 
     .state-tabs button {
@@ -926,6 +967,51 @@
     document.querySelectorAll('[data-screen]').forEach((button) => {
       button.addEventListener('click', () => showScreen(button.dataset.screen));
     });
+
+    function enableDragScroll(element) {
+      let active = false;
+      let moved = false;
+      let startX = 0;
+      let scrollLeft = 0;
+
+      element.addEventListener('pointerdown', (event) => {
+        active = true;
+        moved = false;
+        startX = event.clientX;
+        scrollLeft = element.scrollLeft;
+        element.classList.add('dragging');
+        element.setPointerCapture(event.pointerId);
+      });
+
+      element.addEventListener('pointermove', (event) => {
+        if (!active) return;
+        const delta = event.clientX - startX;
+        if (Math.abs(delta) > 3) moved = true;
+        element.scrollLeft = scrollLeft - delta;
+      });
+
+      element.addEventListener('pointerup', (event) => {
+        active = false;
+        element.classList.remove('dragging');
+        if (element.hasPointerCapture(event.pointerId)) {
+          element.releasePointerCapture(event.pointerId);
+        }
+        if (moved) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+
+      element.addEventListener('pointercancel', (event) => {
+        active = false;
+        element.classList.remove('dragging');
+        if (element.hasPointerCapture(event.pointerId)) {
+          element.releasePointerCapture(event.pointerId);
+        }
+      });
+    }
+
+    document.querySelectorAll('.tabs, .ability-strip, .state-tabs, .choice-row, .suggest-row').forEach(enableDragScroll);
   </script>
 </body>
 </html>
