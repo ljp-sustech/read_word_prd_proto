@@ -1,0 +1,1326 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智慧读文 PC 端原型</title>
+  <style>
+    :root {
+      --primary: #2477f2;
+      --primary-deep: #145bd6;
+      --primary-soft: #eaf3ff;
+      --cyan: #15b8c8;
+      --ink: #1f2a3d;
+      --muted: #637083;
+      --line: #dbe6f4;
+      --paper: #ffffff;
+      --wash: #f5f8fc;
+      --good: #18a058;
+      --warn: #f59e0b;
+      --shadow: 0 22px 60px rgba(20, 59, 112, .18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      background: #e9eef5;
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #e9eef5;
+    }
+
+    .system-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
+      display: none;
+    }
+
+    .clean-system {
+      position: absolute;
+      inset: 0;
+      background: #eaf0f7;
+      overflow: hidden;
+    }
+
+    .clean-header {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 72% -20%, rgba(190, 245, 255, .74), transparent 23%),
+        linear-gradient(90deg, #2f76f0, #5aa2ff);
+      box-shadow: 0 3px 12px rgba(27, 94, 180, .16);
+    }
+
+    .clean-brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 29px;
+      height: 29px;
+      place-items: center;
+      border: 2px solid rgba(255, 255, 255, .95);
+      border-radius: 3px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .clean-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+    }
+
+    .clean-avatar {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 2px solid rgba(255, 255, 255, .9);
+      border-radius: 50%;
+      color: #1a5fc5;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .clean-sidebar {
+      position: absolute;
+      top: 82px;
+      bottom: 0;
+      left: 0;
+      width: 204px;
+      padding-top: 12px;
+      background: #fff;
+      box-shadow: 1px 0 0 rgba(41, 71, 108, .06);
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      height: 56px;
+      padding: 0 22px;
+      color: #2e3542;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .menu-item.active {
+      color: #2477f2;
+      background: #f3f8ff;
+    }
+
+    .menu-icon {
+      display: grid;
+      width: 18px;
+      height: 18px;
+      place-items: center;
+      color: inherit;
+      font-size: 15px;
+      flex: 0 0 auto;
+    }
+
+    .menu-arrow {
+      margin-left: auto;
+      color: #7d8796;
+      font-size: 14px;
+    }
+
+    .clean-workspace {
+      position: absolute;
+      top: 82px;
+      right: 0;
+      bottom: 0;
+      left: 204px;
+      padding: 20px;
+      background: #eef3f9;
+    }
+
+    .clean-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(52, 94, 145, .03);
+    }
+
+    .dim-layer {
+      position: absolute;
+      inset: 82px 0 0 204px;
+      background: linear-gradient(90deg, rgba(239, 245, 252, .18), rgba(239, 245, 252, .04));
+      pointer-events: none;
+    }
+
+    .review-rail {
+      position: absolute;
+      top: 102px;
+      left: 224px;
+      width: min(410px, calc(100vw - 650px));
+      min-width: 320px;
+      padding: 22px;
+      border: 1px solid rgba(36, 119, 242, .12);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 14px 36px rgba(30, 72, 128, .08);
+      backdrop-filter: blur(8px);
+    }
+
+    .review-rail h1 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .review-rail p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .rail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .rail-tags span {
+      padding: 6px 9px;
+      border: 1px solid #cfe0f7;
+      border-radius: 6px;
+      color: #22599d;
+      background: #f4f8ff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .bot-entry {
+      position: absolute;
+      right: 34px;
+      bottom: 34px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .bot-entry.dragging {
+      cursor: grabbing;
+    }
+
+    .bot-label {
+      padding: 11px 14px;
+      border: 1px solid rgba(36, 119, 242, .2);
+      border-radius: 10px;
+      color: #164a8c;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 12px 28px rgba(30, 72, 128, .13);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .bot-icon {
+      position: relative;
+      display: grid;
+      width: 66px;
+      height: 66px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .8);
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2d8cff, #11b7cc);
+      box-shadow: 0 20px 42px rgba(30, 104, 210, .34);
+      animation: breathe 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .bot-icon::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 1px solid rgba(36, 119, 242, .25);
+      border-radius: 50%;
+    }
+
+    .bot-face {
+      position: relative;
+      width: 38px;
+      height: 31px;
+      border: 3px solid #fff;
+      border-radius: 13px;
+    }
+
+    .bot-face::before,
+    .bot-face::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .bot-face::before {
+      left: 9px;
+    }
+
+    .bot-face::after {
+      right: 9px;
+    }
+
+    .bot-antenna {
+      position: absolute;
+      top: 11px;
+      width: 3px;
+      height: 11px;
+      border-radius: 3px;
+      background: #fff;
+    }
+
+    .bot-antenna::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -3px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    @keyframes breathe {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .assistant-panel {
+      position: absolute;
+      top: 102px;
+      right: 24px;
+      bottom: 24px;
+      width: min(760px, calc(100vw - 260px));
+      min-width: 620px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      border: 1px solid rgba(36, 119, 242, .15);
+      border-radius: 14px;
+      background: rgba(250, 253, 255, .98);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform: translateX(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+      z-index: 9;
+    }
+
+    .assistant-panel.open {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 20px 15px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.18), transparent 42%),
+        linear-gradient(135deg, #196de8, #17a7c4);
+    }
+
+    .title-block {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .mini-bot {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .18);
+      border: 1px solid rgba(255, 255, 255, .35);
+      font-weight: 700;
+    }
+
+    .title-block h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .title-block p {
+      margin: 5px 0 0;
+      font-size: 12px;
+      opacity: .88;
+    }
+
+    .status-pill {
+      align-self: flex-start;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, .35);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .15);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      overflow-x: auto;
+    }
+
+    .tab {
+      flex: 0 0 auto;
+      padding: 8px 11px;
+      border: 1px solid #d7e4f5;
+      border-radius: 8px;
+      color: #315478;
+      background: #f8fbff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .tab.active {
+      border-color: var(--primary);
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 8px 16px rgba(36, 119, 242, .18);
+    }
+
+    .conversation {
+      min-height: 0;
+      padding: 18px 20px;
+      overflow: auto;
+      background:
+        linear-gradient(180deg, rgba(234, 243, 255, .7), rgba(255, 255, 255, .88) 150px),
+        #fff;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn .22s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        transform: translateY(8px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .message-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .avatar.user-avatar {
+      background: #6b778c;
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 12px 14px;
+      border: 1px solid #dce7f5;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(40, 76, 120, .06);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .user .bubble {
+      color: #fff;
+      border-color: #2d82f6;
+      background: linear-gradient(135deg, #3a8cff, #1a6fe6);
+    }
+
+    .file-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid #d9e8f8;
+      border-radius: 10px;
+      background: #f7fbff;
+    }
+
+    .file-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 9px;
+      color: #fff;
+      background: #e55039;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .file-meta strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .file-meta span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .progress {
+      height: 5px;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eef7;
+    }
+
+    .progress i {
+      display: block;
+      width: 76%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .choice-card {
+      padding: 13px;
+      border: 1px solid #cde0f7;
+      border-radius: 10px;
+      background: #f7fbff;
+      cursor: pointer;
+      transition: .18s ease;
+      text-align: left;
+    }
+
+    .choice-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 22px rgba(36, 119, 242, .14);
+      transform: translateY(-1px);
+    }
+
+    .choice-card strong {
+      display: block;
+      color: #174e95;
+      font-size: 14px;
+    }
+
+    .choice-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .result-card {
+      margin-top: 10px;
+      overflow: hidden;
+      border: 1px solid #d9e7f8;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5edf8;
+      background: #f7fbff;
+    }
+
+    .result-head strong {
+      font-size: 15px;
+    }
+
+    .source-tag,
+    .small-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      color: #15549d;
+      background: #e9f3ff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .result-body {
+      padding: 13px 15px;
+    }
+
+    .result-body h3 {
+      margin: 12px 0 6px;
+      color: #1b477a;
+      font-size: 14px;
+    }
+
+    .result-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .result-body ul {
+      margin: 6px 0 0;
+      padding-left: 20px;
+    }
+
+    .result-body li {
+      margin: 5px 0;
+    }
+
+    .quote {
+      display: inline-flex;
+      margin-left: 4px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      color: #1660b5;
+      background: #eef6ff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .suggestions button,
+    .action-row button,
+    .input-tools button {
+      border: 1px solid #cfe0f7;
+      border-radius: 999px;
+      color: #1b5da5;
+      background: #f6fbff;
+      cursor: pointer;
+      transition: .16s ease;
+    }
+
+    .suggestions button {
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+
+    .suggestions button:hover,
+    .action-row button:hover,
+    .input-tools button:hover {
+      border-color: var(--primary);
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #d8e5f4;
+    }
+
+    .action-row button {
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .flow-step {
+      min-height: 92px;
+      padding: 11px;
+      border: 1px solid #d7e6f7;
+      border-radius: 10px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .flow-step b {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 8px;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--primary);
+      font-size: 13px;
+    }
+
+    .flow-step strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .flow-step span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .composer {
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .input-shell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px;
+      border: 1px solid #d8e4f3;
+      border-radius: 11px;
+      background: #f8fbff;
+    }
+
+    .input-shell input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 14px;
+    }
+
+    .input-tools {
+      display: flex;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .input-tools button {
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+
+    .send {
+      border-color: var(--primary) !important;
+      color: #fff !important;
+      background: var(--primary) !important;
+    }
+
+    .hotspots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .hotspots span {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #eef5ff;
+    }
+
+    .close-panel {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .4);
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(255, 255, 255, .12);
+      cursor: pointer;
+    }
+
+    .note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--warn);
+      border-radius: 8px;
+      color: #5d430a;
+      background: #fff8e8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1100px) {
+      .review-rail {
+        display: none;
+      }
+
+      .assistant-panel {
+        left: 224px;
+        width: auto;
+        min-width: 0;
+      }
+
+      .flow-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <img class="system-bg" src="PC端背景.png" alt="福田区任务编码应用系统背景">
+    <div class="clean-system" aria-hidden="true">
+      <header class="clean-header">
+        <div class="clean-brand">
+          <span class="brand-mark">福</span>
+          <span>福田区任务编码应用系统</span>
+        </div>
+        <div class="clean-user">
+          <span class="clean-avatar">base</span>
+          <span>base</span>
+        </div>
+      </header>
+      <aside class="clean-sidebar">
+        <div class="menu-item active">
+          <span class="menu-icon">⌂</span>
+          <span>首页</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">▣</span>
+          <span>用户反馈台账</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">⚙</span>
+          <span>系统管理</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">▧</span>
+          <span>系统监控</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">▤</span>
+          <span>系统工具</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">▦</span>
+          <span>福田智库</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">♙</span>
+          <span>标签中心</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">▦</span>
+          <span>智能体日志中心</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+        <div class="menu-item">
+          <span class="menu-icon">☁</span>
+          <span>基础信息维护</span>
+          <span class="menu-arrow">⌄</span>
+        </div>
+      </aside>
+      <section class="clean-workspace">
+        <div class="clean-canvas"></div>
+      </section>
+    </div>
+    <div class="dim-layer"></div>
+
+    <section class="review-rail" aria-label="评审说明">
+      <h1>智慧读文 PC 端嵌入原型</h1>
+      <p>在现有 AI 入口体系中新增“智慧读文”能力分支。用户可上传文档或直接输入问题，由意图识别进入文档总结、文档问答和引用溯源流程。</p>
+      <div class="rail-tags">
+        <span>意图识别</span>
+        <span>低置信度反问</span>
+        <span>文档解析</span>
+        <span>引用溯源</span>
+        <span>猜你想问</span>
+        <span>结果流转</span>
+      </div>
+    </section>
+
+    <button class="bot-entry" id="botEntry" type="button" aria-label="打开智慧读文助手">
+      <span class="bot-label">智慧读文</span>
+      <span class="bot-icon" aria-hidden="true">
+        <span class="bot-antenna"></span>
+        <span class="bot-face"></span>
+      </span>
+    </button>
+
+    <section class="assistant-panel open" id="assistantPanel" aria-label="智慧读文助手">
+      <button class="close-panel" id="closePanel" type="button" aria-label="收起面板">×</button>
+      <header class="panel-head">
+        <div class="title-block">
+          <div class="mini-bot">AI</div>
+          <div>
+            <h2>智慧读文助手</h2>
+            <p>文档总结 / 文档问答 / 引用溯源 / 模板化追问</p>
+          </div>
+        </div>
+        <div class="status-pill">已接入现有意图识别分支</div>
+      </header>
+
+      <nav class="tabs" aria-label="原型状态切换">
+        <button class="tab active" type="button" data-screen="guide">入口演示</button>
+        <button class="tab" type="button" data-screen="clarify">反问确认</button>
+        <button class="tab" type="button" data-screen="summary">全文总结</button>
+        <button class="tab" type="button" data-screen="qa">文档问答</button>
+        <button class="tab" type="button" data-screen="handoff">结果流转</button>
+        <button class="tab" type="button" data-screen="flow">流程总览</button>
+      </nav>
+
+      <div class="conversation">
+        <section class="screen active" id="screen-guide">
+          <div class="message-row user">
+            <div class="bubble">
+              帮我看一下这份材料，提炼重点内容。
+              <div class="file-card">
+                <div class="file-icon">PDF</div>
+                <div class="file-meta">
+                  <strong>关于推进智慧政务建设的实施方案.pdf</strong>
+                  <span>PDF · 18页 · 6.2MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="avatar user-avatar">我</div>
+          </div>
+
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              已接收文件，正在进行意图识别和文档解析。
+              <div class="file-card">
+                <div class="file-icon" style="background:#2477f2;">识别</div>
+                <div class="file-meta">
+                  <strong>命中智慧读文意图</strong>
+                  <span>解析文本层级、页码、段落和可引用片段</span>
+                </div>
+              </div>
+              <div class="progress"><i></i></div>
+              <div class="note">评审口径：用户不需要先选择功能，直接上传或提问时，由中枢意图识别智能体判断是否进入智慧读文分支。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-clarify">
+          <div class="message-row user">
+            <div class="bubble">
+              <div class="file-card" style="margin-top:0;">
+                <div class="file-icon">DOC</div>
+                <div class="file-meta">
+                  <strong>福田区数字化转型工作材料.docx</strong>
+                  <span>Word · 12页 · 3.8MB</span>
+                </div>
+              </div>
+            </div>
+            <div class="avatar user-avatar">我</div>
+          </div>
+
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              检测到您上传了文件，但当前操作意图不够明确。请确认需要进行哪类处理：
+              <div class="choice-grid">
+                <button class="choice-card" type="button" data-jump="summary">
+                  <strong>全文总结</strong>
+                  <span>提炼文档主旨、核心观点、关键结论和风险建议。</span>
+                </button>
+                <button class="choice-card" type="button" data-jump="qa">
+                  <strong>文档问答</strong>
+                  <span>围绕文档内容提问，并返回可追溯的依据来源。</span>
+                </button>
+              </div>
+              <div class="suggestions">
+                <button type="button" data-jump="summary">帮我总结这篇文章</button>
+                <button type="button" data-jump="qa">我要查找具体依据</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-summary">
+          <div class="message-row user">
+            <div class="bubble">请帮我总结这篇文章，并标明依据来源。</div>
+            <div class="avatar user-avatar">我</div>
+          </div>
+
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              已完成全文总结，结果如下：
+              <article class="result-card">
+                <div class="result-head">
+                  <strong>关于推进智慧政务建设的实施方案</strong>
+                  <span class="source-tag">已生成引用来源</span>
+                </div>
+                <div class="result-body">
+                  <h3>一、文档主旨</h3>
+                  <p>本文围绕智慧政务建设提出总体目标、重点任务和实施路径，强调以数据共享、业务协同和智能化服务提升基层治理效率。<span class="quote">引用：第1页</span></p>
+
+                  <h3>二、核心观点</h3>
+                  <ul>
+                    <li>推进跨部门数据汇聚，减少重复填报和人工流转。<span class="quote">引用：第3段</span></li>
+                    <li>建设统一智能服务入口，提升事项办理和政策查询效率。<span class="quote">引用：第2页</span></li>
+                    <li>强化安全合规和操作留痕，保障政务数据使用边界。<span class="quote">引用：第4页</span></li>
+                  </ul>
+
+                  <h3>三、关键结论</h3>
+                  <p>方案具备较明确的建设方向，但需要进一步确认系统集成方式、数据权限边界和阶段性验收指标。</p>
+
+                  <h3>四、风险与建议</h3>
+                  <p>建议优先明确数据共享清单、接口责任方和试点范围，避免后续建设中出现跨部门协同成本过高的问题。</p>
+                </div>
+              </article>
+
+              <div class="suggestions" aria-label="猜你想问">
+                <button type="button">提取关键数据</button>
+                <button type="button">生成汇报话术</button>
+                <button type="button">查看依据</button>
+                <button type="button">改写为正式表述</button>
+              </div>
+              <div class="action-row">
+                <button type="button">复制结果</button>
+                <button type="button" data-jump="handoff">流转到润色</button>
+                <button type="button" data-jump="qa">继续文档问答</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-qa">
+          <div class="message-row user">
+            <div class="bubble">文档里关于数据安全的要求是什么？依据在哪里？</div>
+            <div class="avatar user-avatar">我</div>
+          </div>
+
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              <article class="result-card">
+                <div class="result-head">
+                  <strong>文档问答结果</strong>
+                  <span class="small-tag">检索到 3 个相关片段</span>
+                </div>
+                <div class="result-body">
+                  <h3>直接结论</h3>
+                  <p>文档要求系统建设过程中遵循政务数据安全规范，明确数据使用范围、权限边界和日志留痕机制。</p>
+
+                  <h3>依据说明</h3>
+                  <ul>
+                    <li>涉及数据调用时，应遵循最小必要原则，仅在授权范围内读取业务数据。<span class="quote">来源：第4页第2段</span></li>
+                    <li>系统需保留必要操作日志和异常日志，便于问题追溯。<span class="quote">来源：第5页第1段</span></li>
+                    <li>涉及敏感或涉密材料时，不纳入普通智能问答处理范围。<span class="quote">来源：第5页第3段</span></li>
+                  </ul>
+                </div>
+              </article>
+
+              <div class="suggestions">
+                <button type="button">查看原文依据</button>
+                <button type="button">扩展解释</button>
+                <button type="button">生成风险提示</button>
+                <button type="button">改写为汇报口径</button>
+              </div>
+              <div class="note">伪多轮规则：点击按钮后，系统固定拼接“上一轮问题 + 回答摘要 + 引用片段 + 当前按钮意图”，生成下一轮 Prompt。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-handoff">
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              当前结果可继续流转到已有 PC 端能力，支持后续编辑加工。
+              <article class="result-card">
+                <div class="result-head">
+                  <strong>结果流转</strong>
+                  <span class="small-tag">复用已有组件</span>
+                </div>
+                <div class="result-body">
+                  <div class="choice-grid">
+                    <button class="choice-card" type="button">
+                      <strong>润色</strong>
+                      <span>对总结内容进行政务公文风格润色。</span>
+                    </button>
+                    <button class="choice-card" type="button">
+                      <strong>AI改写</strong>
+                      <span>将回答改写为汇报稿、通知或工作简报。</span>
+                    </button>
+                    <button class="choice-card" type="button">
+                      <strong>内容编辑</strong>
+                      <span>进入已有编辑组件，继续人工调整。</span>
+                    </button>
+                    <button class="choice-card" type="button">
+                      <strong>复制引用</strong>
+                      <span>保留引用标签，便于回溯核验。</span>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-flow">
+          <div class="message-row">
+            <div class="avatar">AI</div>
+            <div class="bubble" style="max-width:100%;">
+              <strong>智慧读文处理流程总览</strong>
+              <div class="flow-grid">
+                <div class="flow-step">
+                  <b>1</b>
+                  <strong>用户输入</strong>
+                  <span>输入问题、上传文件，或二者同时进行。</span>
+                </div>
+                <div class="flow-step">
+                  <b>2</b>
+                  <strong>意图识别</strong>
+                  <span>判断是否命中智慧读文分支。</span>
+                </div>
+                <div class="flow-step">
+                  <b>3</b>
+                  <strong>文件解析</strong>
+                  <span>调用文本抽取、OCR、表格解析工具。</span>
+                </div>
+                <div class="flow-step">
+                  <b>4</b>
+                  <strong>生成结果</strong>
+                  <span>输出总结、问答、引用来源。</span>
+                </div>
+                <div class="flow-step">
+                  <b>5</b>
+                  <strong>继续操作</strong>
+                  <span>猜你想问或流转到润色/编辑。</span>
+                </div>
+              </div>
+              <div class="note">当意图识别置信度不足时，先触发反问确认，再进入对应流程。</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="composer">
+        <div class="input-shell">
+          <input value="上传文件后，可直接输入：帮我总结这篇文章" aria-label="输入框">
+          <div class="input-tools">
+            <button type="button">上传</button>
+            <button class="send" type="button">发送</button>
+          </div>
+        </div>
+        <div class="hotspots">
+          快捷能力
+          <span>全文总结</span>
+          <span>文档问答</span>
+          <span>引用溯源</span>
+          <span>猜你想问</span>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const panel = document.getElementById('assistantPanel');
+    const entry = document.getElementById('botEntry');
+    const closePanel = document.getElementById('closePanel');
+    const tabs = [...document.querySelectorAll('.tab')];
+    const screens = [...document.querySelectorAll('.screen')];
+
+    function showScreen(name) {
+      tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.screen === name));
+      screens.forEach((screen) => screen.classList.toggle('active', screen.id === `screen-${name}`));
+      panel.classList.add('open');
+    }
+
+    const dragState = {
+      active: false,
+      moved: false,
+      startX: 0,
+      startY: 0,
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function placeEntry(x, y) {
+      const margin = 14;
+      const rect = entry.getBoundingClientRect();
+      const maxX = window.innerWidth - rect.width - margin;
+      const maxY = window.innerHeight - rect.height - margin;
+      const left = clamp(x, margin, maxX);
+      const top = clamp(y, 96, maxY);
+
+      entry.style.left = `${left}px`;
+      entry.style.top = `${top}px`;
+      entry.style.right = 'auto';
+      entry.style.bottom = 'auto';
+    }
+
+    entry.addEventListener('pointerdown', (event) => {
+      dragState.active = true;
+      dragState.moved = false;
+      dragState.startX = event.clientX;
+      dragState.startY = event.clientY;
+
+      const rect = entry.getBoundingClientRect();
+      dragState.offsetX = event.clientX - rect.left;
+      dragState.offsetY = event.clientY - rect.top;
+
+      entry.classList.add('dragging');
+      entry.setPointerCapture(event.pointerId);
+    });
+
+    entry.addEventListener('pointermove', (event) => {
+      if (!dragState.active) return;
+
+      const deltaX = Math.abs(event.clientX - dragState.startX);
+      const deltaY = Math.abs(event.clientY - dragState.startY);
+      if (deltaX > 4 || deltaY > 4) {
+        dragState.moved = true;
+      }
+
+      if (dragState.moved) {
+        placeEntry(event.clientX - dragState.offsetX, event.clientY - dragState.offsetY);
+      }
+    });
+
+    entry.addEventListener('pointerup', (event) => {
+      if (!dragState.active) return;
+
+      dragState.active = false;
+      entry.classList.remove('dragging');
+      entry.releasePointerCapture(event.pointerId);
+
+      if (!dragState.moved) {
+        panel.classList.toggle('open');
+      }
+    });
+
+    entry.addEventListener('pointercancel', (event) => {
+      dragState.active = false;
+      entry.classList.remove('dragging');
+      if (entry.hasPointerCapture(event.pointerId)) {
+        entry.releasePointerCapture(event.pointerId);
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      const rect = entry.getBoundingClientRect();
+      placeEntry(rect.left, rect.top);
+    });
+
+    closePanel.addEventListener('click', () => panel.classList.remove('open'));
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => showScreen(tab.dataset.screen));
+    });
+
+    document.querySelectorAll('[data-jump]').forEach((button) => {
+      button.addEventListener('click', () => showScreen(button.dataset.jump));
+    });
+  </script>
+</body>
+</html>
