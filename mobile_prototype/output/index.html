@@ -839,7 +839,7 @@
 
         <div class="state-tabs" aria-label="评审流程切换">
           <button class="active" type="button" data-screen="home">首页入口</button>
-          <button type="button" data-screen="upload">上传解析</button>
+          <button type="button" data-screen="upload">文件入会话</button>
           <button type="button" data-screen="clarify">反问确认</button>
           <button type="button" data-screen="summary">全文总结</button>
           <button type="button" data-screen="qa">文档问答</button>
@@ -881,13 +881,13 @@
               <div class="msg">
                 <div class="avatar">AI</div>
                 <div class="bubble">
-                  已收到文件，正在判断您的文档处理需求，并解析文件内容。
+                  文件已进入当前对话，系统正在判断您的文档处理需求，并自动解析文件内容。
                   <div class="flow-chips">
                     <span>需求判断</span>
-                    <span>PDF解析</span>
+                    <span>文件解析</span>
                     <span>OCR兜底</span>
                   </div>
-                  <div class="tip">移动端优先支持查看、总结、问答与快捷追问；复杂编辑建议在PC端完成。</div>
+                  <div class="tip">上传入口只负责选择文件；选择后文件直接进入对话，解析与需求判断由后台自动完成。</div>
                 </div>
               </div>
             </div>
@@ -1021,8 +1021,8 @@
           <p class="sheet-subtitle">围绕当前上传文件进行总结、问答和引用回溯；移动端保留轻量操作，复杂编辑引导到PC端。</p>
           <div class="sheet-grid">
             <button class="sheet-card" type="button" data-screen="upload">
-              <strong>上传文件</strong>
-              <span>选择PDF、Word或表格类文件进行解析。</span>
+              <strong>选择文件</strong>
+              <span>选择PDF、Word或表格类文件，文件卡片直接进入对话。</span>
             </button>
             <button class="sheet-card" type="button" data-screen="summary">
               <strong>全文总结</strong>
@@ -1087,7 +1087,7 @@
         showScreen(button.dataset.screen);
       }
     });
-    plusBtn.addEventListener('click', openSheet);
+    plusBtn.addEventListener('click', () => showScreen('upload'));
     closeSheet.addEventListener('click', () => sheet.classList.remove('active'));
     sheet.addEventListener('click', (event) => {
       if (event.target === sheet) sheet.classList.remove('active');
