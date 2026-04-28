@@ -373,7 +373,7 @@
       display: flex;
       justify-content: space-between;
       gap: 18px;
-      padding: 18px 20px 15px;
+      padding: 18px 64px 15px 20px;
       color: #fff;
       background:
         linear-gradient(135deg, rgba(255,255,255,.18), transparent 42%),
@@ -412,6 +412,7 @@
 
     .status-pill {
       align-self: flex-start;
+      max-width: 132px;
       padding: 7px 10px;
       border: 1px solid rgba(255, 255, 255, .35);
       border-radius: 999px;
@@ -814,16 +815,30 @@
       font-size: 12px;
     }
 
-    .hotspots span {
-      padding: 3px 7px;
+    .hotspots button {
+      padding: 4px 9px;
+      border: 1px solid #d7e5f6;
       border-radius: 999px;
+      color: #315478;
       background: #eef5ff;
+      cursor: pointer;
+      font-size: 12px;
+      transition: .16s ease;
+    }
+
+    .hotspots button:hover,
+    .hotspots button:focus-visible {
+      border-color: var(--primary);
+      color: #fff;
+      background: var(--primary);
+      outline: none;
+      box-shadow: 0 6px 14px rgba(36, 119, 242, .18);
     }
 
     .close-panel {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 14px;
+      right: 16px;
       display: grid;
       width: 32px;
       height: 32px;
@@ -833,6 +848,7 @@
       color: #fff;
       background: rgba(255, 255, 255, .12);
       cursor: pointer;
+      z-index: 3;
     }
 
     .note {
@@ -930,10 +946,10 @@
 
     <section class="review-rail" aria-label="评审说明">
       <h1>智慧读文 PC 端嵌入原型</h1>
-      <p>在现有 AI 入口体系中新增“智慧读文”能力分支。用户可上传文档或直接输入问题，由意图识别进入文档总结、文档问答和引用溯源流程。</p>
+      <p>在现有 AI 入口体系中新增“智慧读文”能力分支。用户可上传文档或直接输入问题，系统在后台自动判断文档处理需求，并进入文档总结、文档问答或反问确认流程。</p>
       <div class="rail-tags">
-        <span>意图识别</span>
-        <span>低置信度反问</span>
+        <span>需求判断</span>
+        <span>反问确认</span>
         <span>文档解析</span>
         <span>引用溯源</span>
         <span>猜你想问</span>
@@ -959,7 +975,7 @@
             <p>文档总结 / 文档问答 / 引用溯源 / 模板化追问</p>
           </div>
         </div>
-        <div class="status-pill">已接入现有意图识别分支</div>
+        <div class="status-pill">后台需求判断</div>
       </header>
 
       <nav class="tabs" aria-label="原型状态切换">
@@ -990,16 +1006,16 @@
           <div class="message-row">
             <div class="avatar">AI</div>
             <div class="bubble">
-              已接收文件，正在进行意图识别和文档解析。
+              已接收文件，正在判断您的文档处理需求，并解析文件内容。
               <div class="file-card">
-                <div class="file-icon" style="background:#2477f2;">识别</div>
+                <div class="file-icon" style="background:#2477f2;">判断</div>
                 <div class="file-meta">
-                  <strong>命中智慧读文意图</strong>
+                  <strong>进入智慧读文处理流程</strong>
                   <span>解析文本层级、页码、段落和可引用片段</span>
                 </div>
               </div>
               <div class="progress"><i></i></div>
-              <div class="note">评审口径：用户不需要先选择功能，直接上传或提问时，由中枢意图识别智能体判断是否进入智慧读文分支。</div>
+              <div class="note">评审口径：用户不需要先选择“需求判断”功能。直接上传或提问后，由后台中枢判断机制决定是否进入智慧读文分支。</div>
             </div>
           </div>
         </section>
@@ -1021,7 +1037,7 @@
           <div class="message-row">
             <div class="avatar">AI</div>
             <div class="bubble">
-              检测到您上传了文件，但当前操作意图不够明确。请确认需要进行哪类处理：
+              检测到您上传了文件，但当前处理目标不够明确。请确认需要进行哪类处理：
               <div class="choice-grid">
                 <button class="choice-card" type="button" data-jump="summary">
                   <strong>全文总结</strong>
@@ -1122,7 +1138,7 @@
                 <button type="button">生成风险提示</button>
                 <button type="button">改写为汇报口径</button>
               </div>
-              <div class="note">伪多轮规则：点击按钮后，系统固定拼接“上一轮问题 + 回答摘要 + 引用片段 + 当前按钮意图”，生成下一轮 Prompt。</div>
+              <div class="note">伪多轮规则：点击按钮后，系统固定拼接“上一轮问题 + 回答摘要 + 引用片段 + 当前按钮目标”，生成下一轮 Prompt。</div>
             </div>
           </div>
         </section>
@@ -1175,8 +1191,8 @@
                 </div>
                 <div class="flow-step">
                   <b>2</b>
-                  <strong>意图识别</strong>
-                  <span>判断是否命中智慧读文分支。</span>
+                  <strong>需求判断</strong>
+                  <span>后台判断是否进入智慧读文分支及处理流程。</span>
                 </div>
                 <div class="flow-step">
                   <b>3</b>
@@ -1190,11 +1206,11 @@
                 </div>
                 <div class="flow-step">
                   <b>5</b>
-                  <strong>继续操作</strong>
-                  <span>猜你想问或流转到润色/编辑。</span>
+                  <strong>回答后追问</strong>
+                  <span>在每次回答后展示猜你想问，并支持流转到润色/编辑。</span>
                 </div>
               </div>
-              <div class="note">当意图识别置信度不足时，先触发反问确认，再进入对应流程。</div>
+              <div class="note">当文档处理目标不明确时，先触发反问确认，再进入对应流程。</div>
             </div>
           </div>
         </section>
@@ -1210,10 +1226,9 @@
         </div>
         <div class="hotspots">
           快捷能力
-          <span>全文总结</span>
-          <span>文档问答</span>
-          <span>引用溯源</span>
-          <span>猜你想问</span>
+          <button type="button" data-jump="summary">全文总结</button>
+          <button type="button" data-jump="qa">文档问答</button>
+          <button type="button" data-jump="qa">引用溯源</button>
         </div>
       </footer>
     </section>
