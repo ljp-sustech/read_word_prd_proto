@@ -51,8 +51,8 @@
     }
 
     .review-note {
-      max-width: 430px;
-      padding: 26px;
+      max-width: 410px;
+      padding: 24px;
       border: 1px solid rgba(59, 130, 217, .18);
       border-radius: 18px;
       background: rgba(255, 255, 255, .86);
@@ -61,7 +61,7 @@
 
     .review-note h1 {
       margin: 0;
-      font-size: 27px;
+      font-size: 25px;
       line-height: 1.25;
       letter-spacing: 0;
     }
@@ -135,7 +135,7 @@
     }
 
     .topbar {
-      height: 64px;
+      height: 60px;
       display: flex;
       align-items: center;
       gap: 18px;
@@ -156,22 +156,23 @@
     .topbar h2 {
       margin: 0;
       flex: 1;
-      font-size: 25px;
+      font-size: 23px;
       font-weight: 500;
       letter-spacing: 0;
     }
 
     .app {
       position: absolute;
-      inset: 114px 0 0;
+      inset: 110px 0 0;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: auto auto 1fr auto;
+      min-width: 0;
       background: linear-gradient(180deg, #cfe6ff 0%, #d8ecff 58%, #f7fbff 100%);
     }
 
     .tabs {
-      margin: 16px 16px 0;
-      height: 52px;
+      margin: 14px 16px 0;
+      height: 48px;
       display: flex;
       align-items: center;
       border-radius: 10px;
@@ -201,7 +202,7 @@
       flex: 0 0 auto;
       place-items: center;
       color: #858c98;
-      font-size: 19px;
+      font-size: 17px;
       font-weight: 700;
       white-space: nowrap;
       scroll-snap-align: start;
@@ -231,7 +232,7 @@
     .content {
       position: relative;
       min-height: 0;
-      padding: 14px 16px 10px;
+      padding: 12px 16px 10px;
       overflow: hidden;
     }
 
@@ -239,6 +240,7 @@
       display: none;
       height: 100%;
       overflow: auto;
+      overflow-x: hidden;
       padding-bottom: 8px;
       animation: fade .18s ease;
     }
@@ -259,14 +261,15 @@
     }
 
     .hero {
-      padding: 20px 0 6px;
+      padding: 16px 0 6px;
       text-align: center;
     }
 
     .hero p {
-      margin: 0;
+      max-width: 318px;
+      margin: 0 auto;
       color: #202a39;
-      font-size: 18px;
+      font-size: 15px;
       line-height: 1.8;
       font-weight: 700;
     }
@@ -277,9 +280,9 @@
     }
 
     .mascot-card {
-      width: 116px;
-      height: 116px;
-      margin: 12px auto 18px;
+      width: 92px;
+      height: 92px;
+      margin: 10px auto 14px;
       border-radius: 36px;
       background:
         radial-gradient(circle at 38% 38%, #326cff 0 8px, transparent 9px),
@@ -305,7 +308,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 22px;
+      bottom: 18px;
       color: #3385dc;
       font-weight: 800;
     }
@@ -323,7 +326,7 @@
       justify-content: space-between;
       margin-bottom: 10px;
       color: #1c304a;
-      font-size: 19px;
+      font-size: 17px;
       font-weight: 700;
     }
 
@@ -337,10 +340,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 54px;
+      min-height: 46px;
       padding: 0 14px;
       border-bottom: 1px solid #eef2f6;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.5;
     }
 
@@ -351,13 +354,15 @@
     .chat {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 11px;
+      min-width: 0;
     }
 
     .msg {
       display: flex;
       align-items: flex-start;
       gap: 8px;
+      min-width: 0;
     }
 
     .msg.user {
@@ -378,18 +383,27 @@
     }
 
     .bubble {
-      max-width: 82%;
-      padding: 11px 12px;
+      min-width: 0;
+      max-width: 86%;
+      padding: 10px 11px;
       border-radius: 14px;
       background: #fff;
       box-shadow: 0 7px 18px rgba(37, 80, 130, .08);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .user .bubble {
+      max-width: 70%;
       color: #fff;
       background: linear-gradient(135deg, #3d8bef, #2671d7);
+    }
+
+    .msg:not(.user) .bubble {
+      width: calc(100% - 58px);
+      max-width: calc(100% - 58px);
     }
 
     .file-card {
@@ -430,6 +444,8 @@
     .suggest-row {
       display: flex;
       gap: 8px;
+      min-width: 0;
+      max-width: 100%;
       margin-top: 10px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -460,24 +476,29 @@
     }
 
     .result-card {
+      max-width: 100%;
+      overflow: hidden;
       margin-top: 8px;
-      padding: 12px;
+      padding: 11px;
       border: 1px solid #e0eaf5;
       border-radius: 14px;
       background: #fff;
+      border-left: 3px solid #3b82d9;
     }
 
     .result-card h3 {
       margin: 0 0 7px;
       color: #1d477a;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .result-card p,
     .result-card li {
       margin: 5px 0;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.65;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .result-card ul {
@@ -492,7 +513,25 @@
       border-radius: 6px;
       color: #1d65b0;
       background: #edf6ff;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .flow-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .flow-chips span {
+      padding: 3px 7px;
+      border: 1px solid #d6e8fb;
+      border-radius: 999px;
+      color: #286bb1;
+      background: #f3f9ff;
       font-size: 11px;
+      line-height: 1.4;
     }
 
     .tip {
@@ -544,6 +583,13 @@
       font-weight: 800;
     }
 
+    .sheet-subtitle {
+      margin: -4px 0 14px;
+      color: #637084;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     .sheet-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -574,13 +620,16 @@
     }
 
     .composer {
-      padding: 8px 16px 14px;
+      min-width: 0;
+      padding: 8px 16px 12px;
       background: #fff;
       box-shadow: 0 -8px 20px rgba(36, 75, 126, .08);
     }
 
     .ability-strip {
       display: flex;
+      width: 100%;
+      min-width: 0;
       gap: 8px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -593,6 +642,7 @@
     .ability-strip button {
       display: inline-flex;
       align-items: center;
+      flex: 0 0 auto;
       gap: 6px;
       padding: 8px 12px;
       color: #222;
@@ -642,16 +692,19 @@
     }
 
     .state-tabs {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 128px;
+      position: relative;
+      margin: 10px 16px 0;
+      padding: 2px;
       display: flex;
       gap: 6px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      z-index: 4;
+      border: 1px solid rgba(211, 226, 244, .9);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 6px 18px rgba(42, 96, 154, .08);
+      z-index: 3;
       pointer-events: auto;
       mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
       cursor: grab;
@@ -666,9 +719,11 @@
     }
 
     .state-tabs button {
-      padding: 6px 9px;
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border-color: transparent;
       font-size: 12px;
-      background: rgba(255, 255, 255, .9);
+      background: transparent;
     }
 
     .state-tabs button.active {
@@ -694,7 +749,8 @@
 
       .review-shell {
         grid-template-columns: 1fr;
-        padding: 12px;
+        width: 100%;
+        padding: 0;
       }
 
       .review-note {
@@ -708,6 +764,10 @@
         border: 0;
       }
 
+      .content {
+        padding-right: 28px;
+      }
+
       .phone::before {
         display: none;
       }
@@ -718,14 +778,14 @@
   <main class="review-shell">
     <section class="review-note">
       <h1>粤政易移动端智慧读文原型</h1>
-      <p>移动端不设置小机器人入口，而是在输入框上方增加“智慧读文”能力按钮。点击后进入底部能力面板，承接文件上传、反问确认、全文总结、文档问答和固定追问按钮。</p>
+      <p>这一版重点服务评审走查：把“上传文件、意图反问、全文总结、文档问答、固定追问”放进同一条移动端对话链路，同时保持接近粤政易的工作台观感。</p>
       <div class="note-grid">
-        <span>输入框上方能力按钮</span>
-        <span>沿用粤政易对话流</span>
+        <span>评审流程条</span>
+        <span>粤政易对话流</span>
         <span>底部能力面板</span>
-        <span>猜你想问横滑按钮</span>
+        <span>意图反问确认</span>
         <span>引用溯源标签</span>
-        <span>复杂编辑引导PC端</span>
+        <span>固定模板追问</span>
       </div>
     </section>
 
@@ -751,10 +811,18 @@
           <span>☷</span>
         </nav>
 
+        <div class="state-tabs" aria-label="评审流程切换">
+          <button class="active" type="button" data-screen="home">首页入口</button>
+          <button type="button" data-screen="upload">上传解析</button>
+          <button type="button" data-screen="clarify">反问确认</button>
+          <button type="button" data-screen="summary">全文总结</button>
+          <button type="button" data-screen="qa">文档问答</button>
+        </div>
+
         <div class="content">
           <section class="screen active" id="screen-home">
             <div class="hero">
-              <p>您好，我是AI办公助手小福，<br>可以帮您 <em>交办任务、查询进展、下达批示</em>，请下达指令吧！</p>
+              <p>您好，我是AI办公助手小福，<br>可以帮您 <em>交办任务、查询进展、阅读文档</em>。</p>
               <div class="mascot-card" aria-hidden="true"></div>
             </div>
             <div class="question-card">
@@ -788,6 +856,11 @@
                 <div class="avatar">AI</div>
                 <div class="bubble">
                   已收到文件，正在进行智慧读文意图识别与文档解析。
+                  <div class="flow-chips">
+                    <span>意图识别</span>
+                    <span>PDF解析</span>
+                    <span>OCR兜底</span>
+                  </div>
                   <div class="tip">移动端优先支持查看、总结、问答与快捷追问；复杂编辑建议在PC端完成。</div>
                 </div>
               </div>
@@ -811,6 +884,10 @@
                 <div class="avatar">AI</div>
                 <div class="bubble">
                   检测到您上传了文件，请确认需要进行哪类操作？
+                  <div class="flow-chips">
+                    <span>低置信度</span>
+                    <span>用户补全意图</span>
+                  </div>
                   <div class="choice-row">
                     <button type="button" data-screen="summary">全文总结</button>
                     <button type="button" data-screen="qa">文档问答</button>
@@ -829,6 +906,11 @@
                 <div class="avatar">AI</div>
                 <div class="bubble">
                   已完成全文总结。
+                  <div class="flow-chips">
+                    <span>结构化总结</span>
+                    <span>引用溯源</span>
+                    <span>猜你想问</span>
+                  </div>
                   <div class="result-card">
                     <h3>一、文档主旨</h3>
                     <p>文件围绕重点工作任务推进情况进行说明，强调任务进度跟踪、责任单位协同和阶段性成果汇总。<span class="quote">来源：第1页</span></p>
@@ -859,6 +941,11 @@
               <div class="msg">
                 <div class="avatar">AI</div>
                 <div class="bubble">
+                  <div class="flow-chips">
+                    <span>文档问答</span>
+                    <span>先结论后依据</span>
+                    <span>固定追问</span>
+                  </div>
                   <div class="result-card">
                     <h3>直接结论</h3>
                     <p>需重点关注进度滞后的跨部门协同任务，以及需要形成阶段性汇报材料的重点任务。</p>
@@ -880,14 +967,6 @@
           </section>
         </div>
 
-        <div class="state-tabs" aria-label="评审状态切换">
-          <button class="active" type="button" data-screen="home">首页</button>
-          <button type="button" data-screen="upload">上传</button>
-          <button type="button" data-screen="clarify">反问</button>
-          <button type="button" data-screen="summary">总结</button>
-          <button type="button" data-screen="qa">问答</button>
-        </div>
-
         <footer class="composer">
           <div class="ability-strip">
             <button type="button">▣ 任务交办</button>
@@ -897,7 +976,7 @@
             <button type="button" data-screen="qa">文档问答</button>
           </div>
           <div class="input-box">
-            <input value="发消息或按住说话..." aria-label="输入框">
+            <input placeholder="发消息或按住说话..." aria-label="输入框">
             <button class="round-btn" type="button">◔</button>
             <button class="round-btn" type="button" id="plusBtn">+</button>
           </div>
@@ -912,6 +991,7 @@
             <span>智慧读文</span>
             <button type="button" id="closeSheet" style="border:0;background:transparent;font-size:22px;">×</button>
           </div>
+          <p class="sheet-subtitle">围绕当前上传文件进行总结、问答和引用回溯；移动端保留轻量操作，复杂编辑引导到PC端。</p>
           <div class="sheet-grid">
             <button class="sheet-card" type="button" data-screen="upload">
               <strong>上传文件</strong>
@@ -939,11 +1019,12 @@
     const screens = [...document.querySelectorAll('.screen')];
     const stateButtons = [...document.querySelectorAll('.state-tabs button')];
     const sheet = document.getElementById('abilitySheet');
+    const abilityStrip = document.querySelector('.ability-strip');
     const readDocBtn = document.getElementById('readDocBtn');
     const plusBtn = document.getElementById('plusBtn');
     const closeSheet = document.getElementById('closeSheet');
 
-    function showScreen(name) {
+    function showScreen(name, updateHash = true) {
       screens.forEach((screen) => {
         screen.classList.toggle('active', screen.id === `screen-${name}`);
       });
@@ -951,6 +1032,9 @@
         button.classList.toggle('active', button.dataset.screen === name);
       });
       sheet.classList.remove('active');
+      if (updateHash && window.location.hash !== `#${name}`) {
+        history.replaceState(null, '', `#${name}`);
+      }
     }
 
     function openSheet() {
@@ -958,6 +1042,24 @@
     }
 
     readDocBtn.addEventListener('click', openSheet);
+    abilityStrip.addEventListener('click', (event) => {
+      if (abilityStrip.dataset.dragged === 'true') {
+        event.preventDefault();
+        return;
+      }
+
+      const button = event.target.closest('button');
+      if (!button || !abilityStrip.contains(button)) return;
+
+      if (button.id === 'readDocBtn') {
+        openSheet();
+        return;
+      }
+
+      if (button.dataset.screen) {
+        showScreen(button.dataset.screen);
+      }
+    });
     plusBtn.addEventListener('click', openSheet);
     closeSheet.addEventListener('click', () => sheet.classList.remove('active'));
     sheet.addEventListener('click', (event) => {
@@ -968,25 +1070,36 @@
       button.addEventListener('click', () => showScreen(button.dataset.screen));
     });
 
+    const initialScreen = window.location.hash.replace('#', '');
+    if (screens.some((screen) => screen.id === `screen-${initialScreen}`)) {
+      showScreen(initialScreen, false);
+    }
+
     function enableDragScroll(element) {
       let active = false;
       let moved = false;
       let startX = 0;
       let scrollLeft = 0;
+      let pointerId = null;
 
       element.addEventListener('pointerdown', (event) => {
         active = true;
         moved = false;
+        pointerId = event.pointerId;
         startX = event.clientX;
         scrollLeft = element.scrollLeft;
         element.classList.add('dragging');
-        element.setPointerCapture(event.pointerId);
       });
 
       element.addEventListener('pointermove', (event) => {
         if (!active) return;
         const delta = event.clientX - startX;
-        if (Math.abs(delta) > 3) moved = true;
+        if (Math.abs(delta) > 3) {
+          moved = true;
+          if (pointerId !== null && !element.hasPointerCapture(pointerId)) {
+            element.setPointerCapture(pointerId);
+          }
+        }
         element.scrollLeft = scrollLeft - delta;
       });
 
@@ -996,7 +1109,12 @@
         if (element.hasPointerCapture(event.pointerId)) {
           element.releasePointerCapture(event.pointerId);
         }
+        pointerId = null;
         if (moved) {
+          element.dataset.dragged = 'true';
+          setTimeout(() => {
+            delete element.dataset.dragged;
+          }, 0);
           event.preventDefault();
           event.stopPropagation();
         }
@@ -1008,6 +1126,7 @@
         if (element.hasPointerCapture(event.pointerId)) {
           element.releasePointerCapture(event.pointerId);
         }
+        pointerId = null;
       });
     }
 
