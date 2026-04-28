@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>粤政易智慧读文移动端原型</title>
+  <style>
+    :root {
+      --blue: #3b82d9;
+      --blue-deep: #2b66c8;
+      --blue-soft: #d9ecff;
+      --bg: #cfe7ff;
+      --ink: #172033;
+      --muted: #758094;
+      --line: #dfe8f3;
+      --card: #ffffff;
+      --chip: #eef6ff;
+      --red: #d9232e;
+      --green: #19a262;
+      --shadow: 0 16px 44px rgba(33, 75, 126, .22);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      background:
+        radial-gradient(circle at 22% 12%, rgba(106, 172, 255, .28), transparent 28%),
+        linear-gradient(135deg, #eef5ff, #dcecff);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .review-shell {
+      display: grid;
+      grid-template-columns: 430px minmax(320px, 420px);
+      gap: 28px;
+      align-items: center;
+      padding: 28px;
+    }
+
+    .review-note {
+      max-width: 430px;
+      padding: 26px;
+      border: 1px solid rgba(59, 130, 217, .18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .86);
+      box-shadow: 0 18px 54px rgba(45, 86, 139, .14);
+    }
+
+    .review-note h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .review-note p {
+      margin: 12px 0 0;
+      color: #536176;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .note-grid span {
+      padding: 10px 11px;
+      border: 1px solid #cfdef2;
+      border-radius: 10px;
+      color: #1e5da5;
+      background: #f5f9ff;
+      font-size: 13px;
+    }
+
+    .phone {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      overflow: hidden;
+      border: 10px solid #111827;
+      border-radius: 42px;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 128px;
+      height: 29px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #06070a;
+      z-index: 10;
+    }
+
+    .status {
+      position: relative;
+      z-index: 2;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 0 18px;
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .topbar .icon {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      flex: 1;
+      font-size: 25px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .app {
+      position: absolute;
+      inset: 114px 0 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: linear-gradient(180deg, #cfe6ff 0%, #d8ecff 58%, #f7fbff 100%);
+    }
+
+    .tabs {
+      margin: 16px 16px 0;
+      height: 52px;
+      display: grid;
+      grid-template-columns: 46px repeat(4, 1fr) 44px;
+      align-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 8px 22px rgba(42, 96, 154, .1);
+      overflow: hidden;
+    }
+
+    .tabs span {
+      display: grid;
+      height: 100%;
+      place-items: center;
+      color: #858c98;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .tabs span.active {
+      position: relative;
+      color: var(--blue-deep);
+    }
+
+    .tabs span.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--blue-deep);
+    }
+
+    .content {
+      position: relative;
+      min-height: 0;
+      padding: 14px 16px 10px;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      height: 100%;
+      overflow: auto;
+      padding-bottom: 8px;
+      animation: fade .18s ease;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from {
+        transform: translateY(8px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .hero {
+      padding: 20px 0 6px;
+      text-align: center;
+    }
+
+    .hero p {
+      margin: 0;
+      color: #202a39;
+      font-size: 18px;
+      line-height: 1.8;
+      font-weight: 700;
+    }
+
+    .hero em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .mascot-card {
+      width: 116px;
+      height: 116px;
+      margin: 12px auto 18px;
+      border-radius: 36px;
+      background:
+        radial-gradient(circle at 38% 38%, #326cff 0 8px, transparent 9px),
+        radial-gradient(circle at 62% 38%, #326cff 0 8px, transparent 9px),
+        linear-gradient(180deg, #ffffff, #d5efff);
+      box-shadow: 0 16px 38px rgba(51, 118, 201, .18);
+      position: relative;
+    }
+
+    .mascot-card::before {
+      content: "";
+      position: absolute;
+      top: 28px;
+      left: 24px;
+      right: 24px;
+      height: 36px;
+      border-radius: 18px;
+      background: #0e2445;
+    }
+
+    .mascot-card::after {
+      content: "AI";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 22px;
+      color: #3385dc;
+      font-weight: 800;
+    }
+
+    .question-card {
+      padding: 15px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .38);
+      box-shadow: 0 10px 24px rgba(49, 109, 181, .08);
+    }
+
+    .question-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #1c304a;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .question-list {
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .question-list div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 54px;
+      padding: 0 14px;
+      border-bottom: 1px solid #eef2f6;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .question-list div:last-child {
+      border-bottom: 0;
+    }
+
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .msg.user {
+      justify-content: flex-end;
+    }
+
+    .avatar {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 7px 18px rgba(37, 80, 130, .08);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .user .bubble {
+      color: #fff;
+      background: linear-gradient(135deg, #3d8bef, #2671d7);
+    }
+
+    .file-card {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f4f8fd;
+      border: 1px solid #e0ebf8;
+    }
+
+    .file-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 9px;
+      color: #fff;
+      background: #df3e33;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .file-meta strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .file-meta span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .choice-row,
+    .suggest-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .choice-row button,
+    .suggest-row button,
+    .ability-strip button,
+    .state-tabs button {
+      border: 1px solid #d4e5f8;
+      border-radius: 999px;
+      color: #1b61a8;
+      background: #f5faff;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .choice-row button {
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+
+    .suggest-row button {
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .result-card {
+      margin-top: 8px;
+      padding: 12px;
+      border: 1px solid #e0eaf5;
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .result-card h3 {
+      margin: 0 0 7px;
+      color: #1d477a;
+      font-size: 14px;
+    }
+
+    .result-card p,
+    .result-card li {
+      margin: 5px 0;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .result-card ul {
+      margin: 0;
+      padding-left: 17px;
+    }
+
+    .quote {
+      display: inline-flex;
+      margin-left: 4px;
+      padding: 1px 6px;
+      border-radius: 6px;
+      color: #1d65b0;
+      background: #edf6ff;
+      font-size: 11px;
+    }
+
+    .tip {
+      margin-top: 10px;
+      padding: 9px 10px;
+      border-left: 3px solid #f3a31c;
+      border-radius: 9px;
+      color: #6f4b0c;
+      background: #fff8e8;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .sheet-mask {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      background: rgba(8, 32, 66, .48);
+      z-index: 5;
+    }
+
+    .sheet-mask.active {
+      display: flex;
+    }
+
+    .sheet {
+      width: 100%;
+      padding: 12px 16px 22px;
+      border-radius: 24px 24px 0 0;
+      background: #fff;
+      box-shadow: 0 -16px 40px rgba(12, 31, 56, .22);
+    }
+
+    .sheet-handle {
+      width: 54px;
+      height: 8px;
+      margin: 0 auto 14px;
+      border-radius: 999px;
+      background: #eaf2fb;
+    }
+
+    .sheet-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .sheet-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .sheet-card {
+      padding: 13px;
+      border: 1px solid #dbe9f9;
+      border-radius: 14px;
+      background: #f7fbff;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .sheet-card strong {
+      display: block;
+      color: #1b579e;
+      font-size: 15px;
+    }
+
+    .sheet-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .composer {
+      padding: 8px 16px 14px;
+      background: #fff;
+      box-shadow: 0 -8px 20px rgba(36, 75, 126, .08);
+    }
+
+    .ability-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .ability-strip button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      color: #222;
+      background: #fff;
+      border-color: #e0e0e0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+      font-size: 14px;
+    }
+
+    .ability-strip button.primary {
+      color: #0f66c8;
+      border-color: #bddcff;
+      background: #eef7ff;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 54px;
+      padding: 8px 10px 8px 14px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .12);
+    }
+
+    .input-box input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .round-btn {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 2px solid #111;
+      border-radius: 50%;
+      background: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .state-tabs {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 128px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      z-index: 4;
+      pointer-events: auto;
+    }
+
+    .state-tabs button {
+      padding: 6px 9px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, .9);
+    }
+
+    .state-tabs button.active {
+      color: #fff;
+      border-color: var(--blue-deep);
+      background: var(--blue-deep);
+    }
+
+    .bottom-safe {
+      height: 20px;
+      display: grid;
+      place-items: center;
+      color: #777;
+      font-size: 20px;
+      background: #fff;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        place-items: start center;
+        background: #eaf3ff;
+      }
+
+      .review-shell {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+
+      .review-note {
+        display: none;
+      }
+
+      .phone {
+        width: min(100vw, 390px);
+        height: 100vh;
+        border-radius: 0;
+        border: 0;
+      }
+
+      .phone::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="review-shell">
+    <section class="review-note">
+      <h1>粤政易移动端智慧读文原型</h1>
+      <p>移动端不设置小机器人入口，而是在输入框上方增加“智慧读文”能力按钮。点击后进入底部能力面板，承接文件上传、反问确认、全文总结、文档问答和固定追问按钮。</p>
+      <div class="note-grid">
+        <span>输入框上方能力按钮</span>
+        <span>沿用粤政易对话流</span>
+        <span>底部能力面板</span>
+        <span>猜你想问横滑按钮</span>
+        <span>引用溯源标签</span>
+        <span>复杂编辑引导PC端</span>
+      </div>
+    </section>
+
+    <section class="phone" aria-label="移动端原型">
+      <div class="status">
+        <span>11:32</span>
+        <span class="status-icons">5G ▮▮▮ 81%</span>
+      </div>
+      <header class="topbar">
+        <span class="icon">‹</span>
+        <span class="icon">×</span>
+        <h2>AI办公助手</h2>
+        <span class="icon">⋮</span>
+      </header>
+
+      <div class="app">
+        <nav class="tabs" aria-label="粤政易主导航">
+          <span>☰</span>
+          <span class="active">对话</span>
+          <span>任务</span>
+          <span>报告</span>
+          <span>批示</span>
+          <span>☷</span>
+        </nav>
+
+        <div class="content">
+          <section class="screen active" id="screen-home">
+            <div class="hero">
+              <p>您好，我是AI办公助手小福，<br>可以帮您 <em>交办任务、查询进展、下达批示</em>，请下达指令吧！</p>
+              <div class="mascot-card" aria-hidden="true"></div>
+            </div>
+            <div class="question-card">
+              <div class="question-head">
+                <span>？ 猜你想问</span>
+                <span>↻</span>
+              </div>
+              <div class="question-list">
+                <div><span>八卦岭片升级改造进展</span><span>›</span></div>
+                <div><span>上个月来自“区工作例会”的交办任务完成情况是什么？</span><span>›</span></div>
+                <div><span>市级交办任务完成率</span><span>›</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-upload">
+            <div class="chat">
+              <div class="msg user">
+                <div class="bubble">
+                  帮我看一下这份文件
+                  <div class="file-card">
+                    <div class="file-icon">PDF</div>
+                    <div class="file-meta">
+                      <strong>0320福田区金融工作局任务清单.pdf</strong>
+                      <span>PDF · 14页 · 移动端文件卡片</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="avatar">AI</div>
+                <div class="bubble">
+                  已收到文件，正在进行智慧读文意图识别与文档解析。
+                  <div class="tip">移动端优先支持查看、总结、问答与快捷追问；复杂编辑建议在PC端完成。</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-clarify">
+            <div class="chat">
+              <div class="msg user">
+                <div class="bubble">
+                  <div class="file-card" style="margin-top:0;">
+                    <div class="file-icon">PDF</div>
+                    <div class="file-meta">
+                      <strong>福田区软件与信息服务业高质量发展调研.pdf</strong>
+                      <span>仅上传文件，未输入明确指令</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="msg">
+                <div class="avatar">AI</div>
+                <div class="bubble">
+                  检测到您上传了文件，请确认需要进行哪类操作？
+                  <div class="choice-row">
+                    <button type="button" data-screen="summary">全文总结</button>
+                    <button type="button" data-screen="qa">文档问答</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-summary">
+            <div class="chat">
+              <div class="msg user">
+                <div class="bubble">请帮我总结这篇文章，并标明引用来源。</div>
+              </div>
+              <div class="msg">
+                <div class="avatar">AI</div>
+                <div class="bubble">
+                  已完成全文总结。
+                  <div class="result-card">
+                    <h3>一、文档主旨</h3>
+                    <p>文件围绕重点工作任务推进情况进行说明，强调任务进度跟踪、责任单位协同和阶段性成果汇总。<span class="quote">来源：第1页</span></p>
+                    <h3>二、核心观点</h3>
+                    <ul>
+                      <li>任务清单需按责任单位持续跟进。<span class="quote">第2页</span></li>
+                      <li>重点事项应形成可汇报、可追踪的进展口径。<span class="quote">第4段</span></li>
+                    </ul>
+                    <h3>三、风险与建议</h3>
+                    <p>建议补充逾期任务、协同堵点和下一步计划，便于移动端快速查看。</p>
+                  </div>
+                  <div class="suggest-row">
+                    <button type="button">提取关键数据</button>
+                    <button type="button">生成汇报话术</button>
+                    <button type="button">查看依据</button>
+                    <button type="button">改写为正式表述</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" id="screen-qa">
+            <div class="chat">
+              <div class="msg user">
+                <div class="bubble">文档里有哪些需要重点关注的任务？</div>
+              </div>
+              <div class="msg">
+                <div class="avatar">AI</div>
+                <div class="bubble">
+                  <div class="result-card">
+                    <h3>直接结论</h3>
+                    <p>需重点关注进度滞后的跨部门协同任务，以及需要形成阶段性汇报材料的重点任务。</p>
+                    <h3>依据说明</h3>
+                    <ul>
+                      <li>部分任务涉及多个责任单位，需要明确牵头部门。<span class="quote">来源：第3页</span></li>
+                      <li>文件要求定期反馈任务完成情况。<span class="quote">来源：第5页</span></li>
+                    </ul>
+                  </div>
+                  <div class="suggest-row">
+                    <button type="button">查看原文依据</button>
+                    <button type="button">生成风险提示</button>
+                    <button type="button">形成汇报口径</button>
+                  </div>
+                  <div class="tip">猜你想问按钮为固定模板：上一轮答案摘要 + 当前按钮意图 + 引用片段。</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="state-tabs" aria-label="评审状态切换">
+          <button class="active" type="button" data-screen="home">首页</button>
+          <button type="button" data-screen="upload">上传</button>
+          <button type="button" data-screen="clarify">反问</button>
+          <button type="button" data-screen="summary">总结</button>
+          <button type="button" data-screen="qa">问答</button>
+        </div>
+
+        <footer class="composer">
+          <div class="ability-strip">
+            <button type="button">▣ 任务交办</button>
+            <button type="button">▤ 任务简报</button>
+            <button class="primary" id="readDocBtn" type="button">✦ 智慧读文</button>
+            <button type="button" data-screen="summary">全文总结</button>
+            <button type="button" data-screen="qa">文档问答</button>
+          </div>
+          <div class="input-box">
+            <input value="发消息或按住说话..." aria-label="输入框">
+            <button class="round-btn" type="button">◔</button>
+            <button class="round-btn" type="button" id="plusBtn">+</button>
+          </div>
+          <div class="bottom-safe">—　□　‹</div>
+        </footer>
+      </div>
+
+      <div class="sheet-mask" id="abilitySheet">
+        <section class="sheet" aria-label="智慧读文能力面板">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">
+            <span>智慧读文</span>
+            <button type="button" id="closeSheet" style="border:0;background:transparent;font-size:22px;">×</button>
+          </div>
+          <div class="sheet-grid">
+            <button class="sheet-card" type="button" data-screen="upload">
+              <strong>上传文件</strong>
+              <span>选择PDF、Word或表格类文件进行解析。</span>
+            </button>
+            <button class="sheet-card" type="button" data-screen="summary">
+              <strong>全文总结</strong>
+              <span>提炼主旨、观点、结论和风险建议。</span>
+            </button>
+            <button class="sheet-card" type="button" data-screen="qa">
+              <strong>文档问答</strong>
+              <span>围绕文档内容提问并返回引用来源。</span>
+            </button>
+            <button class="sheet-card" type="button" data-screen="clarify">
+              <strong>反问确认</strong>
+              <span>意图不明确时确认总结或问答。</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const screens = [...document.querySelectorAll('.screen')];
+    const stateButtons = [...document.querySelectorAll('.state-tabs button')];
+    const sheet = document.getElementById('abilitySheet');
+    const readDocBtn = document.getElementById('readDocBtn');
+    const plusBtn = document.getElementById('plusBtn');
+    const closeSheet = document.getElementById('closeSheet');
+
+    function showScreen(name) {
+      screens.forEach((screen) => {
+        screen.classList.toggle('active', screen.id === `screen-${name}`);
+      });
+      stateButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.screen === name);
+      });
+      sheet.classList.remove('active');
+    }
+
+    function openSheet() {
+      sheet.classList.add('active');
+    }
+
+    readDocBtn.addEventListener('click', openSheet);
+    plusBtn.addEventListener('click', openSheet);
+    closeSheet.addEventListener('click', () => sheet.classList.remove('active'));
+    sheet.addEventListener('click', (event) => {
+      if (event.target === sheet) sheet.classList.remove('active');
+    });
+
+    document.querySelectorAll('[data-screen]').forEach((button) => {
+      button.addEventListener('click', () => showScreen(button.dataset.screen));
+    });
+  </script>
+</body>
+</html>
