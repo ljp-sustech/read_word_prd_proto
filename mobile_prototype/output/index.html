@@ -682,6 +682,8 @@
     .state-tabs {
       position: relative;
       margin: 10px 16px 0;
+      width: max-content;
+      max-width: calc(100% - 32px);
       padding: 2px;
       display: flex;
       gap: 6px;
@@ -694,7 +696,6 @@
       box-shadow: 0 6px 18px rgba(42, 96, 154, .08);
       z-index: 3;
       pointer-events: auto;
-      mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
       cursor: grab;
     }
 
@@ -792,7 +793,6 @@
 
         <div class="state-tabs" aria-label="评审流程切换">
           <button class="active" type="button" data-screen="home">首页入口</button>
-          <button type="button" data-screen="upload">文件入会话</button>
           <button type="button" data-screen="clarify">反问确认</button>
           <button type="button" data-screen="summary">全文总结</button>
           <button type="button" data-screen="qa">文档问答</button>
@@ -813,35 +813,6 @@
                 <div><span>八卦岭片升级改造进展</span><span>›</span></div>
                 <div><span>上个月来自“区工作例会”的交办任务完成情况是什么？</span><span>›</span></div>
                 <div><span>市级交办任务完成率</span><span>›</span></div>
-              </div>
-            </div>
-          </section>
-
-          <section class="screen" id="screen-upload">
-            <div class="chat">
-              <div class="msg user">
-                <div class="bubble">
-                  帮我看一下这份文件
-                  <div class="file-card">
-                    <div class="file-icon">PDF</div>
-                    <div class="file-meta">
-                      <strong>0320福田区金融工作局任务清单.pdf</strong>
-                      <span>PDF · 14页 · 移动端文件卡片</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="msg">
-                <div class="avatar">AI</div>
-                <div class="bubble">
-                  文件已进入当前对话，系统正在判断您的文档处理需求，并自动解析文件内容。
-                  <div class="flow-chips">
-                    <span>需求判断</span>
-                    <span>文件解析</span>
-                    <span>OCR兜底</span>
-                  </div>
-                  <div class="tip">上传入口只负责选择文件；选择后文件直接进入对话，解析与需求判断由后台自动完成。</div>
-                </div>
               </div>
             </div>
           </section>
@@ -976,7 +947,7 @@
           </div>
           <p class="sheet-subtitle">围绕当前上传文件进行总结、问答和引用回溯；移动端保留轻量操作，复杂编辑引导到PC端。</p>
           <div class="sheet-grid">
-            <button class="sheet-card" type="button" data-screen="upload">
+            <button class="sheet-card" type="button" id="sheetChooseFileBtn">
               <strong>选择文件</strong>
               <span>选择PDF、Word或表格类文件，文件卡片直接进入对话。</span>
             </button>
@@ -1005,6 +976,7 @@
     const abilityStrip = document.querySelector('.ability-strip');
     const readDocBtn = document.getElementById('readDocBtn');
     const plusBtn = document.getElementById('plusBtn');
+    const sheetChooseFileBtn = document.getElementById('sheetChooseFileBtn');
     const fileUploadInput = document.getElementById('fileUploadInput');
     const closeSheet = document.getElementById('closeSheet');
 
@@ -1045,9 +1017,13 @@
       }
     });
     plusBtn.addEventListener('click', () => fileUploadInput.click());
+    sheetChooseFileBtn.addEventListener('click', () => {
+      sheet.classList.remove('active');
+      fileUploadInput.click();
+    });
     fileUploadInput.addEventListener('change', () => {
       if (!fileUploadInput.files.length) return;
-      showScreen('upload');
+      showScreen('clarify');
       fileUploadInput.value = '';
     });
     closeSheet.addEventListener('click', () => sheet.classList.remove('active'));
@@ -1059,9 +1035,12 @@
       button.addEventListener('click', () => showScreen(button.dataset.screen));
     });
 
-    const initialScreen = window.location.hash.replace('#', '');
+    const rawInitialScreen = window.location.hash.replace('#', '');
+    const initialScreen = rawInitialScreen === 'upload'
+      ? 'clarify'
+      : rawInitialScreen;
     if (screens.some((screen) => screen.id === `screen-${initialScreen}`)) {
-      showScreen(initialScreen, false);
+      showScreen(initialScreen, rawInitialScreen === 'upload');
     }
 
     function enableDragScroll(element) {
