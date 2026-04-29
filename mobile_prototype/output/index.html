@@ -957,6 +957,7 @@
             <button class="icon-btn add" type="button" id="plusBtn" aria-label="上传文件">
               <img src="icon-upload-file.svg" alt="">
             </button>
+            <input id="fileUploadInput" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" hidden>
           </div>
         </footer>
       </div>
@@ -999,6 +1000,7 @@
     const abilityStrip = document.querySelector('.ability-strip');
     const readDocBtn = document.getElementById('readDocBtn');
     const plusBtn = document.getElementById('plusBtn');
+    const fileUploadInput = document.getElementById('fileUploadInput');
     const closeSheet = document.getElementById('closeSheet');
 
     function showScreen(name, updateHash = true) {
@@ -1037,7 +1039,12 @@
         showScreen(button.dataset.screen);
       }
     });
-    plusBtn.addEventListener('click', () => showScreen('upload'));
+    plusBtn.addEventListener('click', () => fileUploadInput.click());
+    fileUploadInput.addEventListener('change', () => {
+      if (!fileUploadInput.files.length) return;
+      showScreen('upload');
+      fileUploadInput.value = '';
+    });
     closeSheet.addEventListener('click', () => sheet.classList.remove('active'));
     sheet.addEventListener('click', (event) => {
       if (event.target === sheet) sheet.classList.remove('active');
