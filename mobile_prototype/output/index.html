@@ -283,34 +283,9 @@
       width: 92px;
       height: 92px;
       margin: 10px auto 14px;
-      border-radius: 36px;
-      background:
-        radial-gradient(circle at 38% 38%, #326cff 0 8px, transparent 9px),
-        radial-gradient(circle at 62% 38%, #326cff 0 8px, transparent 9px),
-        linear-gradient(180deg, #ffffff, #d5efff);
-      box-shadow: 0 16px 38px rgba(51, 118, 201, .18);
-      position: relative;
-    }
-
-    .mascot-card::before {
-      content: "";
-      position: absolute;
-      top: 28px;
-      left: 24px;
-      right: 24px;
-      height: 36px;
-      border-radius: 18px;
-      background: #0e2445;
-    }
-
-    .mascot-card::after {
-      content: "AI";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 18px;
-      color: #3385dc;
-      font-weight: 800;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 16px 24px rgba(51, 118, 201, .18));
     }
 
     .question-card {
@@ -691,39 +666,12 @@
       position: relative;
     }
 
-    .icon-btn.voice {
-      gap: 2px;
-      grid-template-columns: repeat(4, 3px);
-    }
-
-    .icon-btn.voice span {
-      width: 3px;
-      border-radius: 999px;
-      background: #151923;
-    }
-
-    .icon-btn.voice span:nth-child(1),
-    .icon-btn.voice span:nth-child(4) {
-      height: 10px;
-    }
-
-    .icon-btn.voice span:nth-child(2),
-    .icon-btn.voice span:nth-child(3) {
-      height: 17px;
-    }
-
-    .icon-btn.add::before,
-    .icon-btn.add::after {
-      content: "";
-      position: absolute;
-      width: 15px;
-      height: 2px;
-      border-radius: 999px;
-      background: #151923;
-    }
-
-    .icon-btn.add::after {
-      transform: rotate(90deg);
+    .icon-btn img {
+      display: block;
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      pointer-events: none;
     }
 
     .state-tabs {
@@ -849,7 +797,7 @@
           <section class="screen active" id="screen-home">
             <div class="hero">
               <p>您好，我是AI办公助手小福，<br>可以帮您 <em>交办任务、查询进展、阅读文档</em>。</p>
-              <div class="mascot-card" aria-hidden="true"></div>
+              <img class="mascot-card" src="xiaofu-robot.svg" alt="AI办公助手小福机器人图标">
             </div>
             <div class="question-card">
               <div class="question-head">
@@ -1004,9 +952,11 @@
           <div class="input-box">
             <input placeholder="发消息或按住说话..." aria-label="输入框">
             <button class="icon-btn voice" type="button" aria-label="语音输入">
-              <span></span><span></span><span></span><span></span>
+              <img src="icon-voice.svg" alt="">
             </button>
-            <button class="icon-btn add" type="button" id="plusBtn" aria-label="上传文件"></button>
+            <button class="icon-btn add" type="button" id="plusBtn" aria-label="上传文件">
+              <img src="icon-upload-file.svg" alt="">
+            </button>
           </div>
         </footer>
       </div>
